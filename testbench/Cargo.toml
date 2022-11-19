@@ -12,6 +12,7 @@ tempfile = "3.3.0"
 y4m = {git="https://github.com/strawlab/y4m", rev="6cc4bf4e85ac151af1568ad5291f238c9bb51f32"}
 tiff = "0.7.4"
 chrono = "0.4.23"
+semver = "1.0.14"
 
 [features]
 backtrace = ["less-avc/backtrace"]

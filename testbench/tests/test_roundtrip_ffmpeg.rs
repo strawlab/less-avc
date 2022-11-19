@@ -25,34 +25,27 @@ const WIDTHS: &[u32] = &[14, 16, 638, 640];
 const HEIGHTS: &[u32] = &[14, 16, 478, 480];
 
 #[test]
-fn test_roundtrip_ffmpeg_even_widths() -> Result<()> {
-    let pixfmts = [PixFmt::Mono8, PixFmt::Rgb8, PixFmt::Mono12];
-    check_roundtrip_ffmpeg(&pixfmts[..], WIDTHS, HEIGHTS)?;
-    Ok(())
-}
-
-#[test]
 fn test_roundtrip_ffmpeg_mono8_even_widths() -> Result<()> {
-    check_roundtrip_ffmpeg(&[PixFmt::Mono8], WIDTHS, HEIGHTS)?;
+    check_roundtrip_ffmpeg(PixFmt::Mono8, WIDTHS, HEIGHTS)?;
     Ok(())
 }
 
 #[test]
 fn test_roundtrip_ffmpeg_mono12_even_widths() -> Result<()> {
-    check_roundtrip_ffmpeg(&[PixFmt::Mono12], WIDTHS, HEIGHTS)?;
+    check_roundtrip_ffmpeg(PixFmt::Mono12, WIDTHS, HEIGHTS)?;
     Ok(())
 }
 
 #[test]
 fn test_roundtrip_ffmpeg_rgb8_even_widths() -> Result<()> {
-    check_roundtrip_ffmpeg(&[PixFmt::Rgb8], WIDTHS, HEIGHTS)?;
+    check_roundtrip_ffmpeg(PixFmt::Rgb8, WIDTHS, HEIGHTS)?;
     Ok(())
 }
 
 #[test]
 fn test_roundtrip_ffmpeg_rgb12_div4_widths() -> Result<()> {
     // Width must be divisible by 4 in this case.
-    check_roundtrip_ffmpeg(&[PixFmt::Rgb12], &[12, 16, 636, 640], HEIGHTS)?;
+    check_roundtrip_ffmpeg(PixFmt::Rgb12, &[12, 16, 636, 640], HEIGHTS)?;
     Ok(())
 }
 
@@ -61,7 +54,7 @@ fn test_roundtrip_ffmpeg_rgb12_even_widths() -> Result<()> {
     // Width must be divisible by 4 in this case.
     for width in WIDTHS.iter() {
         for height in HEIGHTS.iter() {
-            let result = check_roundtrip_ffmpeg(&[PixFmt::Rgb12], &[*width], &[*height]);
+            let result = check_roundtrip_ffmpeg(PixFmt::Rgb12, &[*width], &[*height]);
             if width % 4 == 0 {
                 assert!(result.is_ok());
             } else {
@@ -102,14 +95,14 @@ fn test_roundtrip_ffmpeg_rgb12_even_widths() -> Result<()> {
 #[ignore]
 fn test_roundtrip_ffmpeg_mono8_odd_widths() -> Result<()> {
     // TODO: fix some problem with odd sized widths, e.g. 15x14.
-    let pixfmts = [PixFmt::Mono8];
+    let pixfmt = PixFmt::Mono8;
     let widths = [15];
     let heights = [14];
-    check_roundtrip_ffmpeg(&pixfmts[..], &widths[..], &heights[..])?;
+    check_roundtrip_ffmpeg(pixfmt, &widths[..], &heights[..])?;
     Ok(())
 }
 
-fn check_roundtrip_ffmpeg(pixfmts: &[PixFmt], widths: &[u32], heights: &[u32]) -> Result<()> {
+fn check_roundtrip_ffmpeg(pixfmt: PixFmt, widths: &[u32], heights: &[u32]) -> Result<()> {
     let tmpdir = tempfile::tempdir()?;
     let base_path = tmpdir.path().to_path_buf();
 
@@ -126,11 +119,9 @@ fn check_roundtrip_ffmpeg(pixfmts: &[PixFmt], widths: &[u32], heights: &[u32]) -
     }
 
     let mut outputs = Vec::new();
-    for pixfmt in pixfmts.iter() {
-        for width in widths.iter() {
-            for height in heights.iter() {
-                outputs.push((pixfmt.clone(), *width, *height));
-            }
+    for width in widths.iter() {
+        for height in heights.iter() {
+            outputs.push((pixfmt.clone(), *width, *height));
         }
     }
 
@@ -184,17 +175,13 @@ fn check_roundtrip_ffmpeg(pixfmts: &[PixFmt], widths: &[u32], heights: &[u32]) -
                 };
                 if pixfmt_str == "mono12" {
                     assert_eq!(colortype, tiff::ColorType::Gray(16));
-                    println!("left: (raw) -> y4m --(ffmpeg)--> tiff");
-                    println!("right: (raw) -> less-avc --(ffmpeg)--> tiff");
-                    assert_eq!(vals_12bit, from_ffmpeg_16bit);
                 } else {
-                    assert_eq!(colortype, tiff::ColorType::RGB(16));
                     assert_eq!(pixfmt_str, "rgb12");
-                    println!("left: (raw) -> y4m --(ffmpeg)--> tiff");
-                    println!("right: (raw) -> less-avc --(ffmpeg)--> tiff");
-                    assert_eq!(vals_12bit, from_ffmpeg_16bit);
-                    // todo!("rgb48 comparison");
+                    assert_eq!(colortype, tiff::ColorType::RGB(16));
                 }
+                println!("left: (raw) -> y4m --(ffmpeg)--> tiff");
+                println!("right: (raw) -> less-avc --(ffmpeg)--> tiff");
+                assert_eq!(vals_12bit, from_ffmpeg_16bit);
             }
             PixFmt::Mono8 | PixFmt::Rgb8 => {
                 let input_image = input_image_decoder.read_image()?;

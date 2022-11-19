@@ -1,5 +1,3 @@
-#![feature(test)]
-
 use anyhow::{Context, Result};
 use less_avc::{
     ycbcr_image::{DataPlane, Planes, YCbCrImage},
@@ -8,7 +6,7 @@ use less_avc::{
 
 use tiff::decoder::Decoder as TiffDecoder;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum PixFmt {
     Mono8,
     Mono12,
@@ -476,6 +474,24 @@ pub fn ffmpeg_to_frame(
             String::from_utf8_lossy(&output.stdout),
             String::from_utf8_lossy(&output.stderr)
         );
+    }
+
+    {
+        // Ensure ffmpeg is recent enough.
+        let ffmpeg_stderr = String::from_utf8_lossy(&output.stderr);
+        let mut ffmpeg_stderr_iter = ffmpeg_stderr.split_ascii_whitespace();
+        assert_eq!(ffmpeg_stderr_iter.next(), Some("ffmpeg"));
+        assert_eq!(ffmpeg_stderr_iter.next(), Some("version"));
+
+        if let Some(version_str) = ffmpeg_stderr_iter.next() {
+            let version = semver::Version::parse(version_str)?;
+            let req = semver::VersionReq::parse(">=5.1.1")?;
+            if !req.matches(&version) {
+                anyhow::bail!("You have ffmpeg {version} but requirement is {req}.");
+            }
+        } else {
+            panic!("no ffmpeg version could be read");
+        }
     }
 
     let rdr = std::fs::File::open(&full_tiff_fname)?;
