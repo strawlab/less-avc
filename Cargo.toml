@@ -1,11 +1,12 @@
 [package]
 name = "less-avc"
 description = "less Advanced Video Coding (H.264) encoding"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Andrew Straw <strawman@astraw.com>"]
 license = "MIT/Apache-2.0"
 categories = [ "multimedia::video" ]
+repository = "https://github.com/strawlab/less-avc"
 
 [dependencies]
 bitvec = "1.0.1"

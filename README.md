@@ -1,5 +1,9 @@
 # less-avc - Less Advcanced Video Coding - H.264 Encoder
 
+[![Crates.io](https://img.shields.io/crates/v/less-avc.svg)](https://crates.io/crates/less-avc)
+[![Documentation](https://docs.rs/less-avc/badge.svg)](https://docs.rs/less-avc/)
+[![Crate License](https://img.shields.io/crates/l/less-avc.svg)](https://crates.io/crates/less-avc)
+
 This module contains a pure Rust implementation of an H.264 encoder optimized
 for lossless encoding. It is simple ("less advanced") and uses a small subset of
 the encoder features in the H.264 specification.
