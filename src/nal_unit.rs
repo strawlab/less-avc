@@ -65,34 +65,54 @@ pub(crate) fn rbsp_to_ebsp(rbsp_buf: &[u8], nal_buf: &mut [u8]) -> usize {
     let rbsp_size = rbsp_buf.len();
     let max_nal_buf_size = calc_max_nal_buf_size(rbsp_size);
     assert!(nal_buf.len() >= max_nal_buf_size);
-    let mut i = 0;
-    let mut j = 0;
-    let mut count = 0;
-    loop {
-        if i >= rbsp_size {
+    let mut dest_len = 0;
+
+    let mut input_buf = &rbsp_buf[..];
+
+    while let Some(first_idx) = memchr::memchr(0x00, input_buf) {
+        if first_idx + 1 < input_buf.len() {
+            // more input exists
+            if input_buf[first_idx + 1] == 0x00 {
+                // two nulls in a row
+                if first_idx + 2 < input_buf.len() {
+                    // it is longer
+                    let pos3 = input_buf[first_idx + 2];
+                    if needs_protecting_in_pos3(pos3) {
+                        let src = &input_buf[..first_idx + 2];
+                        nal_buf[dest_len..dest_len + src.len()].copy_from_slice(src);
+                        dest_len += src.len();
+                        nal_buf[dest_len] = 0x03;
+                        dest_len += 1;
+                        input_buf = &input_buf[src.len()..];
+                    } else {
+                        let src = &input_buf[..first_idx + 2];
+                        nal_buf[dest_len..dest_len + src.len()].copy_from_slice(src);
+                        dest_len += src.len();
+                        input_buf = &input_buf[src.len()..];
+                    }
+                } else {
+                    // no more input
+                    break;
+                }
+            } else {
+                // next index is not null, use input up to and including null
+                let src = &input_buf[..first_idx + 1];
+                nal_buf[dest_len..dest_len + src.len()].copy_from_slice(src);
+                dest_len += src.len();
+                input_buf = &input_buf[src.len()..];
+            }
+        } else {
+            // no more input
             break;
         }
-        let current_byte: u8 = rbsp_buf[i]; // profiling: using get_unchecked is not faster
-
-        // Safety: we checked above that `nal_buf` is at least as large as the
-        // maximum possible size.
-        let dest = unsafe { nal_buf.get_unchecked_mut(j) };
-        if (count == 2) && needs_protecting_in_pos3(current_byte) {
-            *dest = 0x03;
-            j += 1;
-            count = 0;
-            continue;
-        }
-        *dest = current_byte;
-        if current_byte == 0x00 {
-            count += 1;
-        } else {
-            count = 0;
-        }
-        i += 1;
-        j += 1;
     }
-    j
+
+    if !input_buf.is_empty() {
+        nal_buf[dest_len..dest_len + input_buf.len()].copy_from_slice(input_buf);
+        dest_len += input_buf.len();
+    }
+
+    dest_len
 }
 
 #[inline]

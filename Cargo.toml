@@ -11,6 +11,7 @@ repository = "https://github.com/strawlab/less-avc"
 [dependencies]
 bitvec = "1.0.1"
 thiserror = "1"
+memchr = "2.5.0"
 
 [dev-dependencies]
 h264-reader = "0.6.0"
