@@ -31,8 +31,9 @@ jobs:
           override: true
       - name: Build and test
         run: cargo test
-      # # The next are disabled until ffmpeg 5.1 is available:
-      # - uses: FedericoCarboni/setup-ffmpeg@v2
-      #   id: setup-ffmpeg
-      # - name: Test roundtrip through ffmpeg
-      #   run: cd testbench && cargo test
+      - name: Install FFMPEG
+        uses: FedericoCarboni/setup-ffmpeg@v2
+        id: setup-ffmpeg
+      - name: Integration tests, including roundtrip through ffmpeg and openh264
+        # Limit tests to bit depth 8 until ffmpeg 5.1 is available.
+        run: cd testbench && cargo test -- --skip mono12
