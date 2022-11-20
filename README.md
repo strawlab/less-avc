@@ -69,8 +69,10 @@ Benchmarks are in the `testbench` directory and crate:
 ```
 cd testbench
 cargo bench
-```
 
+# Or, to benckmark while compiling for the native CPU architecture, like so:
+RUSTFLAGS='-C target-cpu=native' cargo bench
+```
 
 ## License
 
