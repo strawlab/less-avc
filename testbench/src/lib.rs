@@ -197,7 +197,7 @@ impl MyYCbCrImage {
             MyPlanes::Mono(y_plane) => {
                 let (cname, colorspace, tif_pix_fmt) = match self.bit_depth {
                     BitDepth::Depth8 => ("mono", y4m::Colorspace::Cmono, "gray8"),
-                    BitDepth::Depth12 => ("mono12", y4m::Colorspace::Cmono12, "gray12"),
+                    BitDepth::Depth12 => ("mono12", y4m::Colorspace::Cmono12, "gray16"),
                 };
                 (
                     cname,
