@@ -476,7 +476,7 @@ pub fn ffmpeg_to_frame(
         );
     }
 
-    {
+    if tif_pix_fmt == "gray16" {
         // Ensure ffmpeg is recent enough.
         let ffmpeg_stderr = String::from_utf8_lossy(&output.stderr);
         let mut ffmpeg_stderr_iter = ffmpeg_stderr.split_ascii_whitespace();
@@ -487,7 +487,10 @@ pub fn ffmpeg_to_frame(
             let version = semver::Version::parse(version_str)?;
             let req = semver::VersionReq::parse(">=5.1.1")?;
             if !req.matches(&version) {
-                anyhow::bail!("You have ffmpeg {version} but requirement is {req}.");
+                anyhow::bail!(
+                    "You have ffmpeg {version} but requirement is \
+                {req} for tiff pix_fmt {tif_pix_fmt}."
+                );
             }
         } else {
             panic!("no ffmpeg version could be read");
