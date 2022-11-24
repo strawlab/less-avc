@@ -9,7 +9,7 @@ less-avc = {path=".."}
 anyhow = "1"
 openh264 = "0.3.0"
 tempfile = "3.3.0"
-y4m = {git="https://github.com/strawlab/y4m", rev="6cc4bf4e85ac151af1568ad5291f238c9bb51f32"}
+y4m = {git="https://github.com/image-rs/y4m", rev="9dc0b0160446a382c817366fb1df84a32b6a40c9"}
 tiff = "0.7.4"
 chrono = "0.4.23"
 semver = "1.0.14"

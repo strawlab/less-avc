@@ -248,7 +248,9 @@ impl MyYCbCrImage {
                 y4m::Ratio::new(25, 1),
             )
             .with_colorspace(colorspace)
-            .append_vendor_extension("COLORRANGE=FULL".to_string());
+            .append_vendor_extension(y4m::VendorExtensionString::new(
+                b"COLORRANGE=FULL".to_vec(),
+            )?);
             let mut enc = enc_builder.write_header(out_fd)?;
 
             enc.write_frame(&frame)?;
