@@ -79,7 +79,7 @@ pub(crate) fn rbsp_to_ebsp(rbsp_buf: &[u8], nal_buf: &mut [u8]) -> usize {
     assert!(nal_buf.len() >= max_nal_buf_size);
     let mut dest_len = 0;
 
-    let mut input_buf = &rbsp_buf[..];
+    let mut input_buf = rbsp_buf;
 
     while let Some(first_idx) = memchr::memchr(0x00, input_buf) {
         if first_idx + 1 < input_buf.len() {
@@ -193,7 +193,7 @@ fn test_nal_encoding_roundtrip() {
     ];
     for orig in test_vecs.iter() {
         let mut encoded = vec![0u8; calc_max_nal_buf_size(orig.len())];
-        let sz = rbsp_to_ebsp(&orig, &mut encoded);
+        let sz = rbsp_to_ebsp(orig, &mut encoded);
         encoded.truncate(sz);
 
         let decoded = h264_reader::rbsp::decode_nal(&encoded).unwrap();

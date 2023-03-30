@@ -572,7 +572,8 @@ impl MacroblockType {
 
 #[test]
 fn test_macroblock_header() {
-    for typ in &[MacroblockType::I_PCM] {
+    {
+        let typ = &MacroblockType::I_PCM;
         let mut bv: BitVec<u8, Msb0> = BitVec::new();
         bv.extend_exp_golomb(typ.mb_type());
         let macroblock_header_dynamic = bv.as_raw_slice();
