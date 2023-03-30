@@ -28,28 +28,40 @@ impl NalUnit {
             rbsp_data,
         }
     }
-    /// Return a single NAL unit encoded for direct saving to `.h264` file.
-    pub fn to_annex_b_data(&self) -> Vec<u8> {
+
+    fn to_buf(&self, with_frame: bool) -> Vec<u8> {
         #[allow(clippy::identity_op)]
         // forbidden_zero_bit = 0
         let nal_byte = 0x00 | (self.ref_idc.nal_ref_idc() << 5) | self.unit_type.nal_unit_type();
-
-        // start NAL
-        let start_bytes = [0x00, 0x00, 0x00, 0x01, nal_byte];
 
         let rbsp_buf = &self.rbsp_data.data;
         let rbsp_size = rbsp_buf.len();
         let max_nal_buf_size = calc_max_nal_buf_size(rbsp_size);
 
-        let n_start = start_bytes.len();
+        let n_start = if with_frame { 5 } else { 1 };
         let mut result = vec![0u8; n_start + max_nal_buf_size];
-        result[..n_start].copy_from_slice(&start_bytes);
+        if with_frame {
+            result[..4].copy_from_slice(&[0x00, 0x00, 0x00, 0x01]);
+        }
+        result[n_start - 1] = nal_byte;
 
         let nal_buf_sz = rbsp_to_ebsp(&self.rbsp_data.data, &mut result[n_start..]);
         let final_sz = n_start + nal_buf_sz;
         result.truncate(final_sz);
 
         result
+    }
+
+    /// Return a single "naked" NAL unit.
+    ///
+    /// This is the encapsulated byte sequence payload (EBSP) without NALU
+    /// Header.
+    pub fn to_nal_unit(&self) -> Vec<u8> {
+        self.to_buf(false)
+    }
+    /// Return a single NAL unit encoded for direct saving to `.h264` file.
+    pub fn to_annex_b_data(&self) -> Vec<u8> {
+        self.to_buf(true)
     }
 }
 
