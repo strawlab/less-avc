@@ -1,4 +1,4 @@
-# less-avc - Less Advcanced Video Coding - H.264 Encoder
+# less-avc - Less Advanced Video Coding - H.264 Encoder
 
 [![Crates.io](https://img.shields.io/crates/v/less-avc.svg)](https://crates.io/crates/less-avc)
 [![Documentation](https://docs.rs/less-avc/badge.svg)](https://docs.rs/less-avc/)
