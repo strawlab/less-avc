@@ -9,15 +9,17 @@ categories = [ "multimedia::video" ]
 repository = "https://github.com/strawlab/less-avc"
 
 [dependencies]
-bitvec = "1.0.1"
-thiserror = "1"
-memchr = "2.5.0"
+bitvec = { version = "1.0.1", default-features = false, features = [ "alloc" ] }
+memchr = { version = "2.5.0", default-features = false }
 
 [dev-dependencies]
 h264-reader = "0.6.0"
 
 [features]
+default = [ "std" ]
+
 backtrace = []
+std = []
 
 [workspace]
 

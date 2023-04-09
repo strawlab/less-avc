@@ -7,6 +7,8 @@
 
 //! Supplemental Enhancement Information (SEI) encoding
 
+use alloc::{vec, vec::Vec};
+
 use super::RbspData;
 
 /// User data unregistered [SupplementalEnhancementInformation] message

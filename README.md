@@ -19,6 +19,8 @@ Features and characteristics:
   (intra) frame (also "keyframe") using PCM encoding.
 - Tests decode image with [`openh264`](https://crates.io/crates/openh264) and
   [ffmpeg](https://ffmpeg.org) to ensure encoded image is losslessly preserved.
+- Can be compiled without using the rust standard library `std`. In other words,
+  the `no_std` attribute is specified. (A global allocator is required.)
 
 Desired but not implemented feature:
  - Support for other bit-depths and chroma sampling resolutions (e.g. 4:4:4).

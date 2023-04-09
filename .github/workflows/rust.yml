@@ -10,6 +10,7 @@ on:
     - cron: "25 23 * * 4"
 
 jobs:
+
   test:
     strategy:
       fail-fast: false
@@ -37,3 +38,27 @@ jobs:
       - name: Integration tests, including roundtrip through ffmpeg and openh264
         # Limit tests to bit depth 8 until ffmpeg 5.1 is available.
         run: cd testbench && cargo test -- --skip mono12
+
+  no_std:
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [ubuntu-20.04]
+        toolchain:
+          - stable
+          - nightly
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+      - name: install no_std target
+        run: rustup target add thumbv7em-none-eabihf
+      - name: Build for no_std
+        run: cargo build --no-default-features --target thumbv7em-none-eabihf

@@ -16,11 +16,18 @@
 //! (Future updates could include other encoding possibilities.) Bit depths of 8
 //! and 12 in monochrome and YCbCr colorspaces are supported. Tests ensure that
 //! data is losslessly encoded.
+#![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(
     feature = "backtrace",
     feature(error_generic_member_access, provide_any)
 )]
 #![deny(unsafe_code)]
+
+#[cfg(not(feature = "std"))]
+extern crate core as std;
+
+extern crate alloc;
+use alloc::{vec, vec::Vec};
 
 #[cfg(feature = "backtrace")]
 use std::backtrace::Backtrace;
@@ -38,7 +45,9 @@ use nal_unit::*;
 
 pub mod sei;
 
+#[cfg(feature = "std")]
 mod writer;
+#[cfg(feature = "std")]
 pub use writer::H264Writer;
 
 mod encoder;
@@ -47,38 +56,87 @@ pub use encoder::LessEncoder;
 // Error type ----------------------
 
 /// An H.264 encoding error.
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug)]
 pub enum Error {
-    #[error("Image data shape is problematic: {msg}")]
     DataShapeProblem {
         msg: &'static str,
         #[cfg(feature = "backtrace")]
         backtrace: Backtrace,
     },
-    #[error("unsupported format")]
     UnsupportedFormat {
         #[cfg(feature = "backtrace")]
         backtrace: Backtrace,
     },
-    #[error("unsupported image size: even width and height required")]
     UnsupportedImageSize {
         #[cfg(feature = "backtrace")]
         backtrace: Backtrace,
     },
-    #[error("internal error: inconsistent state")]
     InconsistentState {
         #[cfg(feature = "backtrace")]
         backtrace: Backtrace,
     },
-    #[error("IO error: {source}")]
+    #[cfg(feature = "std")]
     IoError {
-        #[from]
         source: std::io::Error,
         #[cfg(feature = "backtrace")]
         backtrace: Backtrace,
     },
 }
 type Result<T> = std::result::Result<T, Error>;
+
+#[cfg(feature = "std")]
+impl From<std::io::Error> for Error {
+    fn from(source: std::io::Error) -> Self {
+        Error::IoError {
+            source,
+            #[cfg(feature = "backtrace")]
+            backtrace: Backtrace::capture(),
+        }
+    }
+}
+
+#[cfg(feature = "std")]
+impl std::error::Error for Error {}
+
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
+        match self {
+            Error::DataShapeProblem {
+                msg,
+                #[cfg(feature = "backtrace")]
+                    backtrace: _,
+            } => {
+                write!(f, "Image data shape is problematic: {msg}")
+            }
+            Error::UnsupportedFormat {
+                #[cfg(feature = "backtrace")]
+                    backtrace: _,
+            } => {
+                write!(f, "unsupported format")
+            }
+            Error::UnsupportedImageSize {
+                #[cfg(feature = "backtrace")]
+                    backtrace: _,
+            } => {
+                write!(f, "unsupported image size: even width and height required")
+            }
+            Error::InconsistentState {
+                #[cfg(feature = "backtrace")]
+                    backtrace: _,
+            } => {
+                write!(f, "internal error: inconsistent state")
+            }
+            #[cfg(feature = "std")]
+            Error::IoError {
+                source,
+                #[cfg(feature = "backtrace")]
+                    backtrace: _,
+            } => {
+                write!(f, "IO error: {source}")
+            }
+        }
+    }
+}
 
 // Utility functions -------------------
 
