@@ -15,8 +15,8 @@ Features and characteristics:
   color (4:2:0) data.
 - Includes an optimized path for luminance-only data in which no chroma data is
   saved.
-- Encodes every frame as an I (intra) frame (also "keyframe") using PCM
-  encoding.
+- Encodes using ALL-Intra, also called All-I. Every frame is recorded as an I
+  (intra) frame (also "keyframe") using PCM encoding.
 - Tests decode image with [`openh264`](https://crates.io/crates/openh264) and
   [ffmpeg](https://ffmpeg.org) to ensure encoded image is losslessly preserved.
 
