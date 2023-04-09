@@ -10,6 +10,7 @@ the encoder features in the H.264 specification.
 
 Features and characteristics:
 - Pure rust.
+- No use of `unsafe`.
 - Lossless encoding of 8 bit and 12 bit monochrome (luminance only 4:0:0) and
   color (4:2:0) data.
 - Includes an optimized path for luminance-only data in which no chroma data is
