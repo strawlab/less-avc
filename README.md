@@ -49,8 +49,9 @@ cargo test
 ```
 
 These tests can export the created streams to `.h264` files if the
-`LESSAVC_SAVE_TEST_H264` environment variable is set. To convert these to
-`.mp4`:
+`LESSAVC_SAVE_TEST_H264` environment variable is set. (To view the location
+where the .h264 files are saved, run the tests with
+`cargo test -- --nocapture`.) To convert these to `.mp4`:
 
 ```
 #!/bin/bash -x
