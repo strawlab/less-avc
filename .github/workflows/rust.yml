@@ -62,3 +62,24 @@ jobs:
         run: rustup target add thumbv7em-none-eabihf
       - name: Build for no_std
         run: cargo build --no-default-features --target thumbv7em-none-eabihf
+
+  backtrace:
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [ubuntu-20.04]
+        toolchain:
+          - nightly
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+      - name: Build
+        run: cargo build --features backtrace
