@@ -1,4 +1,4 @@
-// Copyright 2022 Andrew D. Straw.
+// Copyright 2022-2023 Andrew D. Straw.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT
