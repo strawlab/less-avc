@@ -7,10 +7,10 @@ edition = "2021"
 [dependencies]
 less-avc = {path=".."}
 anyhow = "1"
-openh264 = "0.3.0"
+openh264 = "0.4.0"
 tempfile = "3.3.0"
 y4m = "0.8.0"
-tiff = "0.7.4"
+tiff = "0.9.0"
 chrono = "0.4.23"
 semver = "1.0.14"
 
