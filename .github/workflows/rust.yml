@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install Rust
         id: actions-rs
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           profile: minimal
           toolchain: ${{ matrix.toolchain }}
@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install Rust
         id: actions-rs
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           profile: minimal
           toolchain: ${{ matrix.toolchain }}
@@ -76,7 +76,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install Rust
         id: actions-rs
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           profile: minimal
           toolchain: ${{ matrix.toolchain }}
