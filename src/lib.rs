@@ -766,7 +766,7 @@ impl RbspData {
 mod tests {
     use super::*;
 
-    // Data from https://www.cardinalpeak.com/blog/the-h-264-sequence-parameter-set
+    // Data from https://www.cardinalpeak.com/blog/worlds-smallest-h-264-encoder
     const HELLO_SPS: &[u8] = &[
         0x00, 0x00, 0x00, 0x01, 0x67, 0x42, 0x00, 0x0a, 0xf8, 0x41, 0xa2,
     ];
