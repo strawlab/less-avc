@@ -24,12 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: dtolnay/rust-toolchain@master
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.toolchain }}
-          override: true
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update
+          rustup default ${{ matrix.toolchain }}
       - name: Build and test
         run: cargo test
       - name: Install FFMPEG
@@ -52,12 +49,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: dtolnay/rust-toolchain@master
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.toolchain }}
-          override: true
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update
+          rustup default ${{ matrix.toolchain }}
       - name: install no_std target
         run: rustup target add thumbv7em-none-eabihf
       - name: Build for no_std
@@ -75,11 +69,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: dtolnay/rust-toolchain@master
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.toolchain }}
-          override: true
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update
+          rustup default ${{ matrix.toolchain }}
       - name: Build
         run: cargo build --features backtrace
