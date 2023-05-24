@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - unreleased
+### Fixed
+- Fixed a bug in which specification was not followed. Reported by @wrv.
+  Specifically, "nal_ref_idc shall not be equal to 0 for NAL units with
+  nal_unit_type equal to 5".
+
+### Added
+- `no_std` support
+- implement `source()` method for `Error`
+
 ## [0.1.3] - 2023-03-30
 ### Added
 - Added `NalUnit::to_nal_unit()` method to save "naked" NAL units without start
