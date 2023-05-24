@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.4] - unreleased
+## [0.1.4] - 2023-05-25
 ### Fixed
 - Fixed a bug in which specification was not followed. Reported by @wrv.
   Specifically, "nal_ref_idc shall not be equal to 0 for NAL units with
