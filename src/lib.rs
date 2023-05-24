@@ -569,7 +569,8 @@ impl SliceHeader {
 
     fn to_rbsp(&self, sps: &Sps, pps: &Pps) -> RbspData {
         // We are `slice_layer_without_partitioning_rbsp` because we have
-        // nal_unit_type 5 (NalUnitType::CodedSliceOfAnIDRPicture).
+        // nal_unit_type 5 (NalUnitType::CodedSliceOfAnIDRPicture). Also
+        // `IdrPicFlag` is 1 for the same reason.
 
         // Payload
 
@@ -603,6 +604,13 @@ impl SliceHeader {
         } else {
             todo!();
         }
+
+        // dec_ref_pic_marking
+        //   no_output_of_prior_pics_flag u(1)
+        bv.push(true);
+
+        //   long_term_reference_flag u(1)
+        bv.push(false);
 
         // slice_qp_delta = 0
         bv.extend_signed_exp_golomb(0);
@@ -771,7 +779,11 @@ mod tests {
         0x00, 0x00, 0x00, 0x01, 0x67, 0x42, 0x00, 0x0a, 0xf8, 0x41, 0xa2,
     ];
     const HELLO_PPS: &[u8] = &[0x00, 0x00, 0x00, 0x01, 0x68, 0xce, 0x38, 0x80];
-    const HELLO_SLICE_HEADER: &[u8] = &[0x00, 0x00, 0x00, 0x01, 0x05, 0x88, 0x84, 0x21, 0xa0];
+    // Original slice header data had a bug in that it is not spec compliant.
+    // Here I have fixed it.
+    const FIXED_HELLO_SLICE_HEADER: &[u8] = &[0, 0, 0, 1, 37, 136, 132, 40, 104];
+    // And here is the original slice header.
+    const _HELLO_SLICE_HEADER: &[u8] = &[0x00, 0x00, 0x00, 0x01, 0x05, 0x88, 0x84, 0x21, 0xa0];
     const HELLO_MACROBLOCK_HEADER: &[u8] = &[0x0d, 0x00];
 
     use h264_reader::{
@@ -894,14 +906,14 @@ mod tests {
         }
 
         let encoded = NalUnit::new(
-            NalRefIdc::Zero,
+            NalRefIdc::One,
             NalUnitType::CodedSliceOfAnIDRPicture,
             payload,
         )
         .to_annex_b_data();
 
         let hello_slice_header = {
-            let nal = RefNal::new(&HELLO_SLICE_HEADER[4..], &[], true);
+            let nal = RefNal::new(&FIXED_HELLO_SLICE_HEADER[4..], &[], true);
             let hello_slice_header = h264_reader::nal::slice::SliceHeader::from_bits(
                 &ctx,
                 &mut nal.rbsp_bits(),
@@ -925,7 +937,7 @@ mod tests {
             format!("{:?}", hello_slice_header),
             format!("{:?}", slice_header)
         );
-        assert_eq!(dbg_hex(&encoded), dbg_hex(HELLO_SLICE_HEADER));
+        assert_eq!(dbg_hex(&encoded), dbg_hex(FIXED_HELLO_SLICE_HEADER));
     }
 
     #[test]

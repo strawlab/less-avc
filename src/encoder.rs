@@ -205,7 +205,7 @@ impl LessEncoder {
         debug_assert_eq!(should_have_reserved, reserve_size);
 
         Ok(NalUnit::new(
-            NalRefIdc::Zero,
+            NalRefIdc::One,
             NalUnitType::CodedSliceOfAnIDRPicture,
             slice_data,
         ))
