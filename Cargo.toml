@@ -13,7 +13,7 @@ bitvec = { version = "1.0.1", default-features = false, features = [ "alloc" ] }
 memchr = { version = "2.5.0", default-features = false }
 
 [dev-dependencies]
-h264-reader = "0.6.0"
+h264-reader = "0.7.0"
 
 [features]
 default = [ "std" ]
