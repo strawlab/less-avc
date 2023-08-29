@@ -17,10 +17,7 @@
 //! and 12 in monochrome and YCbCr colorspaces are supported. Tests ensure that
 //! data is losslessly encoded.
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(
-    feature = "backtrace",
-    feature(error_generic_member_access, provide_any)
-)]
+#![cfg_attr(feature = "backtrace", feature(error_generic_member_access))]
 #![deny(unsafe_code)]
 
 #[cfg(not(feature = "std"))]
