@@ -486,7 +486,20 @@ pub fn ffmpeg_to_frame(
         assert_eq!(ffmpeg_stderr_iter.next(), Some("version"));
 
         if let Some(version_str) = ffmpeg_stderr_iter.next() {
-            let version = semver::Version::parse(version_str)?;
+            let version = match semver::Version::parse(version_str) {
+                Ok(version) => version,
+                Err(orig_err) => {
+                    // Append ".0" and see if that helps (e.g. "6.0" -> "6.0.0").
+                    // If not, raise original error.
+                    let version_extended = format!("{version_str}.0");
+                    match semver::Version::parse(&version_extended) {
+                        Ok(version) => version,
+                        Err(_) => {
+                            return Err(orig_err.into());
+                        }
+                    }
+                }
+            };
             let req = semver::VersionReq::parse(">=5.1.1")?;
             if !req.matches(&version) {
                 anyhow::bail!(
