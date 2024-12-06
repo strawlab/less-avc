@@ -279,9 +279,10 @@ pub struct InitialNalUnits {
     pub frame: NalUnit,
 }
 
-impl InitialNalUnits {
-    /// Return an [Iterator] over the NAL units generated at the start of encoding.
-    pub fn into_iter(self) -> impl Iterator<Item = NalUnit> {
+impl std::iter::IntoIterator for InitialNalUnits {
+    type Item = NalUnit;
+    type IntoIter = alloc::vec::IntoIter<Self::Item>;
+    fn into_iter(self) -> Self::IntoIter {
         vec![self.sps, self.pps, self.frame].into_iter()
     }
 }
