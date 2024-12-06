@@ -10,12 +10,11 @@ on:
     - cron: "25 23 * * 4"
 
 jobs:
-
   test:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-20.04, windows-2022, macos-12]
+        runs-on: [ubuntu-latest, windows-latest, macos-latest]
         toolchain:
           - stable
           - nightly
