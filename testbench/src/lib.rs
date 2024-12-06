@@ -307,13 +307,8 @@ impl MyYCbCrImage {
     }
 }
 
-pub fn div_ceil(a: u32, b: u32) -> u32 {
-    // See https://stackoverflow.com/a/72442854
-    (a + b - 1) / b
-}
-
 pub fn next_multiple(a: u32, b: u32) -> u32 {
-    div_ceil(a, b) * b
+    a.div_ceil(b) * b
 }
 
 pub fn generate_image(fmt: &PixFmt, width: u32, height: u32) -> Result<MyYCbCrImage> {
