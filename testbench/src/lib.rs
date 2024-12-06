@@ -486,6 +486,7 @@ pub fn ffmpeg_to_frame(
         assert_eq!(ffmpeg_stderr_iter.next(), Some("version"));
 
         if let Some(version_str) = ffmpeg_stderr_iter.next() {
+            let version_str = fix_ffmpeg_vers(version_str)?;
             let version = match semver::Version::parse(version_str) {
                 Ok(version) => version,
                 Err(orig_err) => {
@@ -515,4 +516,20 @@ pub fn ffmpeg_to_frame(
     let rdr = std::fs::File::open(&full_tiff_fname)?;
     let decoder = tiff::decoder::Decoder::new(rdr)?;
     Ok(decoder)
+}
+
+fn fix_ffmpeg_vers(version_str: &str) -> Result<&str> {
+    let version_str = if let Some(v) = version_str.split("-").next() {
+        v
+    } else {
+        anyhow::bail!("unknown version_str: {version_str:?}");
+    };
+    Ok(version_str)
+}
+
+#[test]
+fn test_fix_ffmpeg_vers() -> Result<()> {
+    assert_eq!(fix_ffmpeg_vers("7.0.2-static")?, "7.0.2");
+    assert_eq!(fix_ffmpeg_vers("7.1-full_build-www.gyan.dev")?, "7.1");
+    Ok(())
 }
