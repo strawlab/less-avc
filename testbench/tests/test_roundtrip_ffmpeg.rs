@@ -14,11 +14,11 @@ const ENV_VAR_NAME: &str = "LESSAVC_SAVE_TEST_H264";
 
 fn do_save_output() -> bool {
     // Potentially do not delete temporary directory
-    let save_output = match std::env::var_os(ENV_VAR_NAME) {
+
+    match std::env::var_os(ENV_VAR_NAME) {
         Some(v) => &v != "0",
         None => false,
-    };
-    save_output
+    }
 }
 
 const WIDTHS: &[u32] = &[14, 16, 638, 640];
@@ -134,7 +134,7 @@ fn check_roundtrip_ffmpeg(pixfmt: PixFmt, widths: &[u32], heights: &[u32]) -> Re
             let out_fd = std::fs::File::create(&full_output_name)?;
             let mut my_h264_writer = less_avc::H264Writer::new(out_fd)?;
 
-            let input_yuv = generate_image(&pixfmt, *width, *height)?;
+            let input_yuv = generate_image(pixfmt, *width, *height)?;
             let frame_view = input_yuv.view();
             my_h264_writer.write(&frame_view)?;
             input_yuv

@@ -131,7 +131,7 @@ fn unpack12be_to_16le(packed: &[u8]) -> Vec<u8> {
     let src_iter = packed.chunks_exact(3);
     // debug_assert_eq!(src_iter.remainder().len(), 0);
     for packed in src_iter {
-        let vals = unpack_12be(&packed);
+        let vals = unpack_12be(packed);
         let unpacked0 = vals[0].to_le_bytes();
         let unpacked1 = vals[1].to_le_bytes();
         dest.extend(unpacked0);
@@ -257,9 +257,9 @@ impl MyYCbCrImage {
         }
         println!("** {output_name}: (raw) -> y4m");
 
-        ffmpeg_to_frame(&base_path, &output_name, tif_pix_fmt)
+        ffmpeg_to_frame(base_path, &output_name, tif_pix_fmt)
     }
-    pub fn view_luma<'a>(&'a self) -> DataPlane<'a> {
+    pub fn view_luma(&self) -> DataPlane<'_> {
         let (data, stride) = match &self.planes {
             &MyPlanes::Mono(ref y_plane) | &MyPlanes::YCbCr((ref y_plane, _, _)) => {
                 (&y_plane.data, y_plane.stride)
@@ -271,7 +271,7 @@ impl MyYCbCrImage {
             bit_depth: less_avc::BitDepth::Depth8,
         }
     }
-    pub fn view<'a>(&'a self) -> YCbCrImage<'a> {
+    pub fn view(&self) -> YCbCrImage<'_> {
         let planes = match &self.planes {
             MyPlanes::Mono(y_plane) => Planes::Mono(DataPlane {
                 data: &y_plane.data,
@@ -334,8 +334,7 @@ pub fn generate_image(fmt: &PixFmt, width: u32, height: u32) -> Result<MyYCbCrIm
 
         let image_row_mono12: Vec<u8> = values_mono12
             .chunks_exact(2)
-            .map(pack_to_12be)
-            .flatten()
+            .flat_map(pack_to_12be)
             .collect();
 
         let valid_width = (width * 3 / 2) as usize;
@@ -372,12 +371,11 @@ pub fn generate_image(fmt: &PixFmt, width: u32, height: u32) -> Result<MyYCbCrIm
 
                 let image_row_chroma12: Vec<u8> = neutral_chroma12
                     .chunks_exact(2)
-                    .map(pack_to_12be)
-                    .flatten()
+                    .flat_map(pack_to_12be)
                     .collect();
 
                 for row in 0..alloc_rows {
-                    let start_idx: usize = row as usize * stride;
+                    let start_idx: usize = row * stride;
                     let dest_row = &mut data[start_idx..(start_idx + valid_width_bytes)];
                     // dest_row.copy_from_slice(&image_row_chroma12);
 
@@ -388,8 +386,7 @@ pub fn generate_image(fmt: &PixFmt, width: u32, height: u32) -> Result<MyYCbCrIm
                     // the case, we want this to still succeed because we want
                     // to test that less-avc returns an
                     // `Error::DataShapeProblem`.
-                    (&mut dest_row[..image_row_chroma12.len()])
-                        .copy_from_slice(&image_row_chroma12);
+                    dest_row[..image_row_chroma12.len()].copy_from_slice(&image_row_chroma12);
                 }
 
                 let chroma_plane = MyImagePlane::new_bit_depth(data, stride, BitDepth::Depth12)?;
