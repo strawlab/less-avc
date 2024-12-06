@@ -36,8 +36,7 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install ffmpeg
       - name: Integration tests, including roundtrip through ffmpeg and openh264
-        # Limit tests to bit depth 8 until ffmpeg 5.1 is available.
-        run: cd testbench && cargo test -- --skip mono12
+        run: cd testbench && cargo test
 
   no_std:
     strategy:

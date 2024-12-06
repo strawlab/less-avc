@@ -92,9 +92,7 @@ fn test_roundtrip_ffmpeg_rgb12_even_widths() -> Result<()> {
 }
 
 #[test]
-#[ignore]
 fn test_roundtrip_ffmpeg_mono8_odd_widths() -> Result<()> {
-    // TODO: fix some problem with odd sized widths, e.g. 15x14.
     let pixfmt = PixFmt::Mono8;
     let widths = [15];
     let heights = [14];
