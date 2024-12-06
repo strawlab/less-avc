@@ -68,7 +68,9 @@ impl NalUnit {
 /// Calculate the maximum possible NAL buffer size for a given RBSP size.
 #[inline]
 fn calc_max_nal_buf_size(rbsp_size: usize) -> usize {
-    (div_ceil(rbsp_size as u32 * 3, 2) * 2).try_into().unwrap()
+    (((rbsp_size as u32 * 3).div_ceil(2)) * 2)
+        .try_into()
+        .unwrap()
 }
 
 /// Convert Raw byte sequence payload (RBSP) data to Encapsulated Byte Sequence

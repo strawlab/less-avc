@@ -149,14 +149,8 @@ impl std::fmt::Display for Error {
 // Utility functions -------------------
 
 #[inline]
-fn div_ceil(a: u32, b: u32) -> u32 {
-    // See https://stackoverflow.com/a/72442854
-    (a + b - 1) / b
-}
-
-#[inline]
 fn next_multiple(a: u32, b: u32) -> u32 {
-    div_ceil(a, b) * b
+    a.div_ceil(b) * b
 }
 
 // H.264 definitions ------------------
@@ -790,15 +784,6 @@ mod tests {
     };
 
     #[test]
-    fn test_div_ceil() {
-        assert_eq!(div_ceil(10, 2), 5);
-        assert_eq!(div_ceil(11, 2), 6);
-        assert_eq!(div_ceil(15, 3), 5);
-        assert_eq!(div_ceil(16, 3), 6);
-        assert_eq!(div_ceil(18, 3), 6);
-    }
-
-    #[test]
     fn test_next_multiple() {
         assert_eq!(next_multiple(10, 16), 16);
         assert_eq!(next_multiple(11, 16), 16);
@@ -828,11 +813,11 @@ mod tests {
 
     #[test]
     fn test_sps() {
-        let width = 128;
-        let height = 96;
+        let width = 128u32;
+        let height = 96u32;
 
-        let pic_width_in_mbs_minus1 = div_ceil(width, 16) - 1;
-        let pic_height_in_map_units_minus1 = div_ceil(height, 16) - 1;
+        let pic_width_in_mbs_minus1 = width.div_ceil(16) - 1;
+        let pic_height_in_map_units_minus1 = height.div_ceil(16) - 1;
 
         let payload = Sps::new(
             ProfileIdc::baseline(),

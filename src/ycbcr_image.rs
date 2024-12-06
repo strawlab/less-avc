@@ -91,11 +91,8 @@ impl DataPlane<'_> {
             });
         }
         // check height
-        let num_rows = div_ceil(
-            self.data.len().try_into().unwrap(),
-            self.stride.try_into().unwrap(),
-        );
-        if num_rows < next_multiple(height, mb_sz) {
+        let num_rows = self.data.len().div_ceil(self.stride);
+        if num_rows < next_multiple(height, mb_sz).try_into().unwrap() {
             return Err(Error::DataShapeProblem {
                 msg: "number of rows too small",
                 #[cfg(feature = "backtrace")]

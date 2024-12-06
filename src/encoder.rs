@@ -79,8 +79,8 @@ impl LessEncoder {
             ),
         };
 
-        let pic_width_in_mbs_minus1 = div_ceil(width, 16) - 1;
-        let pic_height_in_map_units_minus1 = div_ceil(height, 16) - 1;
+        let pic_width_in_mbs_minus1 = width.div_ceil(16) - 1;
+        let pic_height_in_map_units_minus1 = height.div_ceil(16) - 1;
 
         let frame_cropping = if ((pic_width_in_mbs_minus1 + 1) * 16 != width)
             || ((pic_height_in_map_units_minus1 + 1) * 16 != height)
