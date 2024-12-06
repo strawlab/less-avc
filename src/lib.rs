@@ -326,8 +326,8 @@ impl ProfileIdc {
 
                 let bit_depth_luma_minus8 = bit_depth.num_bits() - 8;
                 let bit_depth_chroma_minus8 = bit_depth.num_bits() - 8;
-                bv.extend_exp_golomb(bit_depth_luma_minus8.try_into().unwrap());
-                bv.extend_exp_golomb(bit_depth_chroma_minus8.try_into().unwrap());
+                bv.extend_exp_golomb(bit_depth_luma_minus8.into());
+                bv.extend_exp_golomb(bit_depth_chroma_minus8.into());
 
                 // qpprime_y_zero_transform_bypass_flag 0
                 bv.push(false);

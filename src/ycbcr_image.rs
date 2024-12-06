@@ -25,7 +25,7 @@ pub struct YCbCrImage<'a> {
     pub height: u32,
 }
 
-impl<'a> YCbCrImage<'a> {
+impl YCbCrImage<'_> {
     pub(crate) fn luma_bit_depth(&self) -> BitDepth {
         match &self.planes {
             Planes::Mono(y) => y.bit_depth,
@@ -54,7 +54,7 @@ pub struct DataPlane<'a> {
     pub bit_depth: BitDepth,
 }
 
-impl<'a> YCbCrImage<'a> {
+impl YCbCrImage<'_> {
     pub(crate) fn check_sizes(&self) -> Result<()> {
         match &self.planes {
             Planes::Mono(y_plane) | Planes::YCbCr((y_plane, _, _)) => {
@@ -74,7 +74,7 @@ impl<'a> YCbCrImage<'a> {
     }
 }
 
-impl<'a> DataPlane<'a> {
+impl DataPlane<'_> {
     pub(crate) fn check_sizes(&self, width: u32, height: u32, mb_sz: u32) -> Result<()> {
         let (width_factor_num, width_factor_denom) = match self.bit_depth {
             BitDepth::Depth8 => (1, 1),

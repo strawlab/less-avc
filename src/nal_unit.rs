@@ -130,7 +130,7 @@ pub(crate) fn rbsp_to_ebsp(rbsp_buf: &[u8], nal_buf: &mut [u8]) -> usize {
 #[inline]
 /// Returns true if byte is 0x00, 0x01, 0x02 or 0x03.
 fn needs_protecting_in_pos3(byte: u8) -> bool {
-    matches!(byte, 0x00 | 0x01 | 0x02 | 0x03)
+    matches!(byte, 0x00..=0x03)
 }
 
 #[test]

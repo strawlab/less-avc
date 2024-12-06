@@ -38,15 +38,14 @@ impl LessEncoder {
 
         let bit_depth = y4m_frame.luma_bit_depth();
 
-        match (&y4m_frame.planes, &bit_depth, width % 4 == 0) {
-            (Planes::YCbCr(_), BitDepth::Depth12, false) => {
-                return Err(Error::DataShapeProblem {
-                    msg: "for bit depth 12 color, width must be divisible by 4",
-                    #[cfg(feature = "backtrace")]
-                    backtrace: Backtrace::capture(),
-                });
-            }
-            _ => {}
+        if let (Planes::YCbCr(_), BitDepth::Depth12, false) =
+            (&y4m_frame.planes, &bit_depth, width % 4 == 0)
+        {
+            return Err(Error::DataShapeProblem {
+                msg: "for bit depth 12 color, width must be divisible by 4",
+                #[cfg(feature = "backtrace")]
+                backtrace: Backtrace::capture(),
+            });
         }
 
         match (&y4m_frame.planes, &bit_depth, width % 2 == 0) {
