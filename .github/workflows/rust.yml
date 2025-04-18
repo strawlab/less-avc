@@ -42,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-20.04]
+        runs-on: [ubuntu-latest]
         toolchain:
           - stable
           - nightly
@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-20.04]
+        runs-on: [ubuntu-latest]
         toolchain:
           - nightly
     runs-on: ${{ matrix.runs-on }}
