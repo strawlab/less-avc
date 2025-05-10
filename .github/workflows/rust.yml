@@ -30,7 +30,7 @@ jobs:
         run: cargo test
       - name: Install FFMPEG
         if: runner.os != 'macOS'
-        uses: FedericoCarboni/setup-ffmpeg@v3
+        uses: FedericoCarboni/setup-ffmpeg@v3.1
       - name: Install FFMPEG (macOS)
         # See https://github.com/federicocarboni/setup-ffmpeg/issues/21
         if: runner.os == 'macOS'
